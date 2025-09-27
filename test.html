@@ -120,7 +120,7 @@ document.getElementById('submitBtn').onclick = function() {
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
   // Passing criteria (e.g., 10% correct)
-  const passingScore = Math.ceil(questions.length * 0.1);
+  const passingScore = Math.ceil(questions.length * 0.7);
   if (score >= passingScore) {
     document.getElementById('result').innerHTML += '<br><span class="text-success">مبارک ہو! آپ نے ٹیسٹ پاس کر لیا ہے۔ آپ کا سرٹیفکیٹ تیار ہو جائے گا۔</span>';
     // Send result to backend for certificate
@@ -142,11 +142,11 @@ document.getElementById('submitBtn').onclick = function() {
       if (data.success) {
         document.getElementById('result').innerHTML += '<br><span class="text-success">(نتیجہ سرور پر محفوظ ہو گیا ہے)</span>';
       }
-      document.getElementById('result').innerHTML += '<br><a href="profile.html" class="btn btn-primary mt-3">پروفائل پر واپس جائیں</a>';
+      document.getElementById('result').innerHTML += '<br><a href="profile.html" class="btn btn-primary mt-3">Return to Profile</a>';
     });
   } else {
     document.getElementById('result').innerHTML += '<br><span class="text-danger">آپ ٹیسٹ میں ناکام ہو گئے ہیں۔ </span>';
-    document.getElementById('result').innerHTML += '<br><button id="tryAgainBtn" class="btn btn-warning mt-3">دوبارہ کوشش کریں</button>';
+    document.getElementById('result').innerHTML += '<br><button id="tryAgainBtn" class="btn btn-warning mt-3">Try Again</button>';
     setTimeout(() => {
       const btn = document.getElementById('tryAgainBtn');
       if (btn) btn.onclick = () => window.location.reload();
