@@ -555,7 +555,7 @@
 				container.appendChild(card);
 			});
 			// Check if MCQs exist for this course before showing test button
-			fetch(`${window.API_BASE_URL}/api/test/mcqs/${course.id}`)	
+			fetch(window.API_BASE_URL + `/api/test/mcqs/${courseId}`)
 			  .then(res => res.json())
 			  .then(data => {
 				if (data.questions && data.questions.length > 0) {
