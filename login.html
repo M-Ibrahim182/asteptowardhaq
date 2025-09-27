@@ -16,6 +16,20 @@
 	<link href="assets/css/responsive.css" rel="stylesheet">
 	<link rel="stylesheet" href="test.css">
 	<style>
+	.main-footer {
+		width: 100vw;
+		position: relative;
+		box-sizing: border-box;
+	}
+	@media (max-width: 1200px) {
+		.main-footer {
+			left: 0;
+			right: 0;
+			margin-left: 0;
+			margin-right: 0;
+			width: 100%;
+		}
+	}
 		body {
 			min-height: 100vh;
 			display: flex;
@@ -67,25 +81,6 @@
 		.login-container input[type="password"]:focus {
 			border: 1.5px solid #f7b731;
 			outline: none;
-		}
-		.login-container .btn {
-			margin-top: 1.2rem;
-			width: 100%;
-		}
-		.login-container button {
-			width: 100%;
-			padding: 0.7rem 0;
-			border: none;
-			border-radius: 6px;
-			background: #f7b731;
-			color: #222;
-			font-size: 1.1rem;
-			font-weight: 600;
-			cursor: pointer;
-			transition: background 0.2s;
-		}
-		.login-container button:hover {
-			background: #ffd36e;
 		}
 		.signup-text {
 			margin-bottom: 0.5rem;
@@ -266,13 +261,6 @@
 							Don't have an account? <a href="signup.html">Sign up.</a>
 						</p>
 						<div id="loginError"></div>
-						<div class="btn">
-							<button type="submit">Log In</button>
-						</div>
-					</form>
-				</div>
-					</p>
-					<div id="loginError" style="color: red; margin-bottom: 10px;"></div>
 					<div class="btn">
 						<button type="submit" class="theme-btn btn-style-four" style="text-decoration: none;"><span
 								class="btn-wrap">
@@ -281,6 +269,11 @@
 							</span></button>
 
 					</div>
+					</form>
+				</div>
+					</p>
+					<div id="loginError" style="color: red; margin-bottom: 10px;"></div>
+
 				</form>
 			</div>
 		</div>
