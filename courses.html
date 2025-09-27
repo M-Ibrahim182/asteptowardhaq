@@ -353,7 +353,7 @@
 	<script src="config.js"></script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-			fetch(window.API_BASE_URL + '/api/courses')
+			fetch(`${window.API_BASE_URL}/api/courses`)
 				.then(response => response.json())
 				.then(data => {
 					const container = document.getElementById('courses-container');
