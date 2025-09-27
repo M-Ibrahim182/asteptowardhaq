@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>آن لائن ٹیسٹ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/responsive.css" rel="stylesheet">
+    <style>
+      body {
+        background: #f7fafc;
+        font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Inter', sans-serif;
+        min-height: 100vh;
+      }
+      .test-container {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 2.5rem 2rem;
+      }
+      .test-title {
+        text-align: center;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #4a7c59;
+        margin-bottom: 2rem;
+      }
+      .question-card {
+        background: linear-gradient(135deg, #f8fafc, #e2f0e4);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+        padding: 1.5rem 1.2rem;
+        margin-bottom: 1.5rem;
+        border-right: 5px solid #43c522;
+      }
+      .question-card b {
+        color: #485dbd;
+        font-size: 1.1rem;
+      }
+      .option-label {
+        display: block;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        background: #f3f6f9;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: background 0.2s;
+      }
+      .option-label:hover {
+        background: #e2f0e4;
+      }
+      .submit-btn {
+        display: block;
+        width: 100%;
+        font-size: 1.2rem;
+        padding: 0.8rem 0;
+        border-radius: 10px;
+        margin: 2rem 0 1rem 0;
+        background: linear-gradient(90deg, #abc7ac, #764ba2);
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.09);
+      }
+      .result {
+        text-align: center;
+        font-size: 1.3rem;
+        margin-top: 1.5rem;
+      }
+    </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-title">آن لائن ایم سی کیو ٹیسٹ</div>
+    <div id="testArea">سوالات لوڈ ہو رہے ہیں...</div>
+    <button id="submitBtn" class="submit-btn" style="display:none">ٹیسٹ جمع کروائیں</button>
+    <div id="result" class="result"></div>
+  </div>
+<script>
+const course = 1; // Change this for other courses
+let questions = [];
+let userAnswers = {};
+
+fetch(`http://localhost:5000/api/test/mcqs/${course}`)
+  .then(res => res.json())
+  .then(data => {
+    questions = data.questions;
+    renderQuestions();
+    document.getElementById('submitBtn').style.display = 'block';
+  });
+
+function renderQuestions() {
+  const testArea = document.getElementById('testArea');
+  testArea.innerHTML = questions.map((q, idx) => `
+    <div class="question-card">
+      <div class="mb-2"><b>سوال ${idx+1}:</b> ${q.question_text}</div>
+      <div>
+        ${q.options.map((opt, oidx) => `
+          <label class="option-label">
+            <input type="radio" name="q${idx}" value="${opt}" style="margin-left:8px;" onchange="userAnswers[${idx}] = this.value"> ${opt}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('submitBtn').onclick = function() {
+  let score = 0;
+  questions.forEach((q, idx) => {
+    if (userAnswers[idx] && userAnswers[idx] === q.correct_answer) score++;
+  });
+  const resultText = `آپ کے درست جوابات: <span class="text-success">${score}</span> / ${questions.length}`;
+  document.getElementById('result').innerHTML = resultText;
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+  // Passing criteria (e.g., 10% correct)
+  const passingScore = Math.ceil(questions.length * 0.1);
+  if (score >= passingScore) {
+    document.getElementById('result').innerHTML += '<br><span class="text-success">مبارک ہو! آپ نے ٹیسٹ پاس کر لیا ہے۔ آپ کا سرٹیفکیٹ تیار ہو جائے گا۔</span>';
+    // Send result to backend for certificate
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:5000/api/test/result', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: 'Bearer ' + token } : {})
+      },
+      body: JSON.stringify({
+        course: course,
+        score: score,
+        total: questions.length
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('result').innerHTML += '<br><span class="text-success">(نتیجہ سرور پر محفوظ ہو گیا ہے)</span>';
+      }
+      document.getElementById('result').innerHTML += '<br><a href="profile.html" class="btn btn-primary mt-3">پروفائل پر واپس جائیں</a>';
+    });
+  } else {
+    document.getElementById('result').innerHTML += '<br><span class="text-danger">آپ ٹیسٹ میں ناکام ہو گئے ہیں۔ </span>';
+    document.getElementById('result').innerHTML += '<br><button id="tryAgainBtn" class="btn btn-warning mt-3">دوبارہ کوشش کریں</button>';
+    setTimeout(() => {
+      const btn = document.getElementById('tryAgainBtn');
+      if (btn) btn.onclick = () => window.location.reload();
+    }, 100);
+  }
+};
+</script>
+</body>
+</html>
