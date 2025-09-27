@@ -518,7 +518,7 @@
       </button>
     </div>
   </div>
-
+<script src="config.js"></script>
   <script>
     // Check authentication
     const token = localStorage.getItem('token');
@@ -528,7 +528,7 @@
 
     let userId = null;
     // Fetch profile data
-    fetch('http://localhost:5000/api/auth/profile', {
+    fetch(window.API_BASE_URL + '/api/auth/profile', {
       headers: { Authorization: 'Bearer ' + token }
     })
       .then(res => {
@@ -537,7 +537,6 @@
       })
       .then(data => {
         userId = data.id || null;
-        console.log('Fetched user ID:', userId);
         // Update profile information
         document.getElementById('profileInfo').innerHTML = `
           <div class="info-item">
@@ -594,7 +593,7 @@
             document.querySelectorAll('.get-cert-btn').forEach(btn => {
               btn.addEventListener('click', function() {
                 const courseId = this.getAttribute('data-course');
-                fetch('http://localhost:5000/api/test/certificate', {
+                fetch(window.API_BASE_URL + '/api/test/certificate', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -622,7 +621,7 @@
             document.querySelectorAll('.download-cert-btn').forEach(btn => {
               btn.addEventListener('click', function() {
                 const courseId = this.getAttribute('data-course');
-                fetch(`http://localhost:5000/api/test/certificate/download?course=${courseId}`, {
+                fetch(`${window.API_BASE_URL}/api/test/certificate/download?course=${courseId}`, {
                   method: 'GET',
                   headers: {
                     'Authorization': 'Bearer ' + token
@@ -677,7 +676,7 @@
 
         // Fetch notifications for this user
         if (userId) {
-          fetch(`http://localhost:5000/api/notifications/${userId}`)
+          fetch(`${window.API_BASE_URL}/api/notifications/${userId}`)
             .then(res => res.json())
             .then(nData => {
               window.nData = nData; // Store globally for referral check

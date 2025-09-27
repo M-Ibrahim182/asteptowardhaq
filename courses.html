@@ -350,9 +350,10 @@
 	<script src="assets/js/jquery-ui.js"></script>
 	<script src="assets/js/element-in-view.js"></script>
 	<script src="assets/js/script.js"></script>
+	<script src="config.js"></script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-			fetch('http://localhost:5000/api/courses')
+			fetch(window.API_BASE_URL + '/api/courses')
 				.then(response => response.json())
 				.then(data => {
 					const container = document.getElementById('courses-container');
@@ -361,7 +362,7 @@
 									 const courseCard = document.createElement('div');
 									 courseCard.className = 'course-block_two col-lg-4 col-md-6 col-sm-12';
 									 // Check MCQ availability for this course
-									 fetch(`http://localhost:5000/api/test/mcqs/${course.id}`)
+									 fetch(window.API_BASE_URL + `/api/test/mcqs/${course.id}`)
 										 .then(res => res.json())
 										 .then(mcqData => {
 											 const hasMCQ = mcqData.questions && mcqData.questions.length > 0;

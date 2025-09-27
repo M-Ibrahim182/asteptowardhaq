@@ -364,6 +364,7 @@
 <script src="assets/js/jquery-ui.js"></script>
 <script src="assets/js/element-in-view.js"></script>
 <script src="assets/js/script.js"></script>
+<script src="config.js"></script>
 <script>
 document.querySelector('.signup-container form').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -398,7 +399,7 @@ document.querySelector('.signup-container form').addEventListener('submit', asyn
   };
 
   try {
-    const res = await fetch('http://localhost:5000/api/auth/signup', {
+    const res = await fetch(window.API_BASE_URL + '/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)

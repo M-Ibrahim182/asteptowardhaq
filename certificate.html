@@ -388,7 +388,7 @@
 		</div>
 	</div>
 	
-
+	<script src="config.js"></script>
 	<script>
 	// Require login for certificate page
 	const token = localStorage.getItem('token');
@@ -404,7 +404,7 @@
 		eligibleDiv.innerHTML = '<div>Loading your certificates...</div>';
 		try {
 			// Fetch both eligible and already-issued certificates
-			const res = await fetch('http://localhost:5000/api/test/eligible-certificates', {
+			const res = await fetch(window.API_BASE_URL + "/api/test/eligible-certificates", {
 				headers: { 'Authorization': 'Bearer ' + token }
 			});
 			if (!res.ok) throw new Error('Failed to fetch');
@@ -445,7 +445,7 @@
 
 	// Download certificate function
 	window.downloadCertificate = function(courseId) {
-		fetch(`http://localhost:5000/api/test/certificate/download?course=${courseId}`, {
+		fetch(window.API_BASE_URL + "/api/test/certificate/download?course=${courseId}", {
 			headers: { 'Authorization': 'Bearer ' + token }
 		})
 		.then(res => {

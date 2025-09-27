@@ -486,6 +486,7 @@
 	<script src="assets/js/element-in-view.js"></script>
 	<script src="assets/js/script.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="config.js"></script>
 	<script>
 		const token = localStorage.getItem('token');
 
@@ -521,7 +522,7 @@
 			let completedVideosCount = 0;
 			if (token) {
 				try {
-					const res = await fetch(`http://localhost:5000/api/courses/progress/${courseId}`, {
+					const res = await fetch(window.API_BASE_URL + `/api/courses/progress/${courseId}`, {
 						method: 'GET',
 						headers: {
 							'Authorization': 'Bearer ' + token
@@ -554,7 +555,7 @@
 				container.appendChild(card);
 			});
 			// Check if MCQs exist for this course before showing test button
-			fetch(`http://localhost:5000/api/test/mcqs/${courseId}`)
+			fetch(window.API_BASE_URL + "/api/test/mcqs/${courseId}")
 			  .then(res => res.json())
 			  .then(data => {
 				if (data.questions && data.questions.length > 0) {
@@ -596,7 +597,7 @@
 				  }
 				  function saveProgress(courseId, completedVideos) {
 					  if (!token) return;
-					  fetch('http://localhost:5000/api/courses/progress', {
+					  fetch(window.API_BASE_URL + "/api/courses/progress", {
 						  method: 'POST',
 						  headers: {
 							  'Content-Type': 'application/json',
@@ -634,7 +635,7 @@
 				return;
 			}
 			// Enroll user in course (assign course to user in DB)
-			fetch('http://localhost:5000/api/courses/enroll', {
+			fetch(window.API_BASE_URL + "/api/courses/enroll", {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -644,7 +645,7 @@
 			})
 				.then(() => {
 					// After enrolling, fetch course details and videos
-					return fetch(`http://localhost:5000/api/courses/${courseId}`);
+					return fetch(window.API_BASE_URL + "/api/courses/" + courseId);
 				})
 				.then(res => res.json())
 				.then(course => {
@@ -664,14 +665,14 @@
 			const courseId = getCourseIdFromUrl();
 			if (!courseId) return;
 			// Always fetch course details
-			fetch(`http://localhost:5000/api/courses/${courseId}`)
+			fetch(window.API_BASE_URL + `/api/courses/${courseId}`)
 				.then(res => res.json())
 				.then(course => {
 					renderCourseDetails(course);
 					// Only show videos if logged in
 					if (token) {
 						// Optionally auto-enroll if not already enrolled (backend handles idempotency)
-						fetch('http://localhost:5000/api/courses/enroll', {
+						fetch(window.API_BASE_URL + "/api/courses/enroll", {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',

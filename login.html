@@ -329,6 +329,7 @@
 <script src="assets/js/jquery-ui.js"></script>
 <script src="assets/js/element-in-view.js"></script>
 <script src="assets/js/script.js"></script>
+<script src="config.js"></script>
 <script>
 document.querySelector('.login-container form').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -339,7 +340,7 @@ document.querySelector('.login-container form').addEventListener('submit', async
   loginErrorDiv.textContent = '';
 
   try {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
+    const res = await fetch(window.API_BASE_URL + '/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

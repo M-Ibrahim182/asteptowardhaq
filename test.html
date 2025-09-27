@@ -80,12 +80,13 @@
     <button id="submitBtn" class="submit-btn" style="display:none">ٹیسٹ جمع کروائیں</button>
     <div id="result" class="result"></div>
   </div>
+  <script src="config.js"></script>
 <script>
 const course = 1; // Change this for other courses
 let questions = [];
 let userAnswers = {};
 
-fetch(`http://localhost:5000/api/test/mcqs/${course}`)
+fetch(`${window.API_BASE_URL}/api/test/mcqs/${course}`)
   .then(res => res.json())
   .then(data => {
     questions = data.questions;
@@ -124,7 +125,7 @@ document.getElementById('submitBtn').onclick = function() {
     document.getElementById('result').innerHTML += '<br><span class="text-success">مبارک ہو! آپ نے ٹیسٹ پاس کر لیا ہے۔ آپ کا سرٹیفکیٹ تیار ہو جائے گا۔</span>';
     // Send result to backend for certificate
     const token = localStorage.getItem('token');
-    fetch('http://localhost:5000/api/test/result', {
+    fetch(`${window.API_BASE_URL}/api/test/result`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
