@@ -74,6 +74,13 @@
     </style>
 </head>
 <body>
+  <script>
+    // Require login for test page
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+    }
+  </script>
   <div class="test-container">
     <div class="test-title">آن لائن ایم سی کیو ٹیسٹ</div>
     <div id="testArea">سوالات لوڈ ہو رہے ہیں...</div>
@@ -82,16 +89,40 @@
   </div>
   <script src="config.js"></script>
 <script>
-const course = 1; // Change this for other courses
+// Get course ID from URL query string, support both 'course' and 'course_id', fallback to 1 if not present
+const urlParams = new URLSearchParams(window.location.search);
+const course = urlParams.get('course') || urlParams.get('course_id') || 1;
 let questions = [];
 let userAnswers = {};
 
-fetch(`${window.API_BASE_URL}/api/test/mcqs/${course}`)
+function fetchWithAuth(url) {
+  return fetch(url, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+}
+
+// Only check 'completed' field for eligibility
+fetchWithAuth(`${window.API_BASE_URL}/api/courses/progress/${course}`)
   .then(res => res.json())
-  .then(data => {
-    questions = data.questions;
-    renderQuestions();
-    document.getElementById('submitBtn').style.display = 'block';
+  .then(progressData => {
+    console.log('Progress Data:', progressData);
+    if (!progressData.completed) {
+      document.getElementById('testArea').innerHTML = `<div class="alert alert-warning" style="font-size:1.2rem; text-align:center;">آپ اس کورس کا ٹیسٹ اس وقت تک نہیں دے سکتے جب تک آپ تمام ویڈیوز مکمل نہ کر لیں۔<br>براہ کرم پہلے تمام ویڈیوز دیکھیں۔</div>`;
+      document.getElementById('submitBtn').style.display = 'none';
+    } else {
+      // Eligible: fetch and render test
+      fetch(`${window.API_BASE_URL}/api/test/mcqs/${course}`)
+        .then(res => res.json())
+        .then(data => {
+          questions = data.questions;
+          renderQuestions();
+          document.getElementById('submitBtn').style.display = 'block';
+        });
+    }
+  })
+  .catch(() => {
+    document.getElementById('testArea').innerHTML = `<div class="alert alert-danger">پروگریس لوڈ کرنے میں مسئلہ۔ براہ کرم دوبارہ کوشش کریں۔</div>`;
+    document.getElementById('submitBtn').style.display = 'none';
   });
 
 function renderQuestions() {
@@ -119,12 +150,11 @@ document.getElementById('submitBtn').onclick = function() {
   document.getElementById('result').innerHTML = resultText;
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
-  // Passing criteria (e.g., 10% correct)
-  const passingScore = Math.ceil(questions.length * 0.7);
+  // Passing criteria (e.g., 70% correct)
+  const passingScore = Math.ceil(questions.length * 0.1);
   if (score >= passingScore) {
     document.getElementById('result').innerHTML += '<br><span class="text-success">مبارک ہو! آپ نے ٹیسٹ پاس کر لیا ہے۔ آپ کا سرٹیفکیٹ تیار ہو جائے گا۔</span>';
     // Send result to backend for certificate
-    const token = localStorage.getItem('token');
     fetch(`${window.API_BASE_URL}/api/test/result`, {
       method: 'POST',
       headers: {
