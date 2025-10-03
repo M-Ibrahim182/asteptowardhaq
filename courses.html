@@ -358,15 +358,15 @@
 				.then(data => {
 					const container = document.getElementById('courses-container');
 					container.innerHTML = '';
-							 data.forEach(course => {
-									 const courseCard = document.createElement('div');
-									 courseCard.className = 'course-block_two col-lg-4 col-md-6 col-sm-12';
-									 // Check MCQ availability for this course
-									 fetch(window.API_BASE_URL + `/api/test/mcqs/${course.id}`)
-										 .then(res => res.json())
-										 .then(mcqData => {
-											 const hasMCQ = mcqData.questions && mcqData.questions.length > 0;
-											 courseCard.innerHTML = `
+					data.forEach(course => {
+						const courseCard = document.createElement('div');
+						courseCard.className = 'course-block_two col-lg-4 col-md-6 col-sm-12';
+						// Check MCQ availability for this course
+						fetch(window.API_BASE_URL + `/api/test/mcqs/${course.id}`)
+							.then(res => res.json())
+							.then(mcqData => {
+								const hasMCQ = mcqData.questions && mcqData.questions.length > 0;
+								courseCard.innerHTML = `
 												 <div class="course-block_two-inner wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1000ms">
 													 <div class="course-block_two-image" style="position:relative;">
 														 <a href="course-detail.html?course_id=${course.id}"><img src="${course.image_url || 'assets/images/resource/course-5.jpg'}" alt="" /></a>
@@ -385,11 +385,11 @@
 													 </div>
 												 </div>
 											 `;
-											 container.appendChild(courseCard);
-										 })
-										 .catch(() => {
-											 // If MCQ check fails, show Coming Soon badge
-											 courseCard.innerHTML = `
+								container.appendChild(courseCard);
+							})
+							.catch(() => {
+								// If MCQ check fails, show Coming Soon badge
+								courseCard.innerHTML = `
 												 <div class="course-block_two-inner wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1000ms">
 													 <div class="course-block_two-image" style="position:relative;">
 														 <a href="course-detail.html?course_id=${course.id}"><img src="${course.image_url || 'assets/images/resource/course-5.jpg'}" alt="" /></a>
@@ -408,9 +408,9 @@
 													 </div>
 												 </div>
 											 `;
-											 container.appendChild(courseCard);
-										 });
-							 });
+								container.appendChild(courseCard);
+							});
+					});
 				})
 				.catch(err => {
 					document.getElementById('courses-container').innerHTML = '<p>Error loading courses.</p>';

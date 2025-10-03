@@ -24,10 +24,10 @@
 
 
 
-    .body{
+    .body {
       max-width: 100vw;
       background: white;
-      border-bottom : 20px;
+      border-bottom: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
@@ -231,7 +231,7 @@
       background: linear-gradient(135deg, #f8fafc, #edf2f7);
       border-radius: 12px;
       margin-bottom: 1rem;
-      border-left: 4px solid  #43c522;
+      border-left: 4px solid #43c522;
       transition: all 0.3s ease;
     }
 
@@ -516,9 +516,12 @@
       <button id="logoutBtn" class="logout-btn">
         <i class="fas fa-sign-out-alt me-2"></i>Logout
       </button>
+      <button id="adminPanelBtn" class="btn btn-warning" style="display:none;margin-left:1rem;">
+        <i class="fas fa-user-shield me-2"></i>Admin Panel
+      </button>
     </div>
   </div>
-<script src="config.js"></script>
+  <script src="config.js"></script>
   <script>
     // Check authentication
     const token = localStorage.getItem('token');
@@ -536,6 +539,16 @@
         return res.json();
       })
       .then(data => {
+        // Show admin panel button if user is admin
+        if (data.is_admin) {
+          const adminBtn = document.getElementById('adminPanelBtn');
+          if (adminBtn) {
+            adminBtn.style.display = 'inline-block';
+            adminBtn.onclick = function () {
+              window.location.href = 'admin.html';
+            };
+          }
+        }
         userId = data.id || null;
         // Update profile information
         document.getElementById('profileInfo').innerHTML = `
@@ -591,7 +604,7 @@
           // Add event listeners for Get Certificate and Download Certificate buttons
           setTimeout(() => {
             document.querySelectorAll('.get-cert-btn').forEach(btn => {
-              btn.addEventListener('click', function() {
+              btn.addEventListener('click', function () {
                 const courseId = this.getAttribute('data-course');
                 fetch(window.API_BASE_URL + '/api/test/certificate', {
                   method: 'POST',
@@ -619,7 +632,7 @@
             });
             // Download Certificate button logic
             document.querySelectorAll('.download-cert-btn').forEach(btn => {
-              btn.addEventListener('click', function() {
+              btn.addEventListener('click', function () {
                 const courseId = this.getAttribute('data-course');
                 fetch(`${window.API_BASE_URL}/api/test/certificate/download?course=${courseId}`, {
                   method: 'GET',
@@ -709,33 +722,33 @@
         window.location.href = 'login.html';
       }
     };
-    
+
   </script>
   <script src="assets/js/jquery.js"></script>
-<script src="assets/js/popper.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/appear.js"></script>
-<script src="assets/js/parallax.min.js"></script>
-<script src="assets/js/tilt.jquery.min.js"></script>
-<script src="assets/js/jquery.paroller.min.js"></script>
-<script src="assets/js/wow.js"></script>
-<script src="assets/js/jarallax.js"></script>
-<script src="assets/js/swiper.min.js"></script>
-<script src="assets/js/backtotop.js"></script>
-<script src="assets/js/odometer.js"></script>
-<script src="assets/js/parallax-scroll.js"></script>
+  <script src="assets/js/popper.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/appear.js"></script>
+  <script src="assets/js/parallax.min.js"></script>
+  <script src="assets/js/tilt.jquery.min.js"></script>
+  <script src="assets/js/jquery.paroller.min.js"></script>
+  <script src="assets/js/wow.js"></script>
+  <script src="assets/js/jarallax.js"></script>
+  <script src="assets/js/swiper.min.js"></script>
+  <script src="assets/js/backtotop.js"></script>
+  <script src="assets/js/odometer.js"></script>
+  <script src="assets/js/parallax-scroll.js"></script>
 
-<script src="assets/js/gsap.min.js"></script>
-<script src="assets/js/SplitText.min.js"></script>
-<script src="assets/js/ScrollTrigger.min.js"></script>
-<script src="assets/js/ScrollToPlugin.min.js"></script>
-<script src="assets/js/ScrollSmoother.min.js"></script>
+  <script src="assets/js/gsap.min.js"></script>
+  <script src="assets/js/SplitText.min.js"></script>
+  <script src="assets/js/ScrollTrigger.min.js"></script>
+  <script src="assets/js/ScrollToPlugin.min.js"></script>
+  <script src="assets/js/ScrollSmoother.min.js"></script>
 
-<script src="assets/js/magnific-popup.min.js"></script>
-<script src="assets/js/nav-tool.js"></script>
-<script src="assets/js/jquery-ui.js"></script>
-<script src="assets/js/element-in-view.js"></script>
-<script src="assets/js/script.js"></script>
+  <script src="assets/js/magnific-popup.min.js"></script>
+  <script src="assets/js/nav-tool.js"></script>
+  <script src="assets/js/jquery-ui.js"></script>
+  <script src="assets/js/element-in-view.js"></script>
+  <script src="assets/js/script.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>

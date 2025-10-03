@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/vendor/perfect-scrollbar.min.css" />
+  <style>
+    body { background: #f4f6fb; }
+    .admin-section { max-width: 1200px; margin: 48px auto; background: #fff; border-radius: 18px; box-shadow: 0 6px 32px rgba(0,0,0,0.10); padding: 48px 36px; }
+    .admin-title { font-size: 2.2rem; font-weight: 800; letter-spacing: 1px; color: #2d3748; margin-bottom: 36px; display: flex; align-items: center; gap: 16px; }
+    .nav-tabs { margin-bottom: 36px; }
+    .tab-content { margin-bottom: 32px; }
+    .tree-list ul { list-style: none; padding-left: 28px; }
+    .tree-list li { margin-bottom: 10px; font-size: 1.08em; }
+    .broken-list { color: #b30000; font-size: 1.08em; }
+    .user-details { background: #f8fafc; border-radius: 10px; padding: 24px 28px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .card { border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border: none; }
+    .form-inline input { width: 260px; margin-right: 14px; }
+    .tab-pane { padding-top: 18px; }
+    .admin-section h4 { margin-top: 24px; font-weight: 700; color: #3b4252; }
+    .admin-section label { font-weight: 600; }
+    .admin-section .btn { min-width: 110px; font-weight: 600; }
+    .admin-section .fa { color: #4f8cff; }
+    .student-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(79,140,255,0.10);
+      border: 2px solid #4f8cff;
+      padding: 16px 18px 10px 18px;
+      min-width: 140px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .student-card img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 2px solid #4f8cff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+    .student-card .name {
+      color: #222;
+      font-weight: 700;
+      font-size: 1.08em;
+      text-align: center;
+    }
+    .student-card .roll {
+      color: #4f8cff;
+      font-size: 0.95em;
+      text-align: center;
+    }
+    .d3-card {
+      fill: #fff;
+      stroke: #4f8cff;
+      stroke-width: 2px;
+      rx: 14px;
+      filter: drop-shadow(0 2px 12px rgba(79,140,255,0.10));
+    }
+    .d3-avatar {
+      pointer-events: none;
+    }
+    .d3-label-name {
+      font: 700 1em 'Segoe UI', Arial, sans-serif;
+      fill: #222;
+      text-anchor: middle;
+    }
+    .d3-label-roll {
+      font: 400 0.92em 'Segoe UI', Arial, sans-serif;
+      fill: #4f8cff;
+      text-anchor: middle;
+    }
+    @media (max-width: 900px) {
+      .admin-section { padding: 24px 8px; }
+    }
+  </style>
+  <script src="config.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="admin-section">
+    <div class="admin-title"><span class="fa fa-user-shield"></span> Admin Panel</div>
+    <div id="admin-auth-warning" style="display:none;color:#b30000;font-weight:bold;">Access denied: Admins only.</div>
+    <div id="admin-content" style="display:none;">
+      <ul class="nav nav-tabs" id="adminTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tree-tab" data-bs-toggle="tab" data-bs-target="#tree" type="button" role="tab"><span class="fa fa-sitemap"></span> User Tree</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab"><span class="fa fa-search"></span> User Details</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="broken-tab" data-bs-toggle="tab" data-bs-target="#broken" type="button" role="tab"><span class="fa fa-unlink"></span> Broken Chains</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="adminTabContent">
+        <div class="tab-pane fade show active" id="tree" role="tabpanel">
+          <div class="card p-4 mb-4">
+            <h4 class="mb-3"><span class="fa fa-sitemap"></span> User Referral Tree</h4>
+            <div class="tree-list" id="userTree"></div>
+            <div id="d3-canvas" style="width:100%; height:600px; margin-top:32px; border:1.5px solid #b3c6ff; border-radius:18px; background:#f4f8ff; position:relative; overflow:hidden;"></div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="user" role="tabpanel">
+          <div class="card p-4 mb-4">
+            <h4 class="mb-3"><span class="fa fa-search"></span> Search User Details</h4>
+            <form id="userSearchForm" class="form-inline mb-3">
+              <input type="text" id="searchRollNo" class="form-control" placeholder="Enter Roll No" required>
+              <button type="submit" class="btn btn-primary"><span class="fa fa-search"></span> Search</button>
+            </form>
+            <div class="user-details" id="userDetails"></div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="broken" role="tabpanel">
+          <div class="card p-4 mb-4">
+            <h4 class="mb-3"><span class="fa fa-unlink"></span> Broken Referral Chains</h4>
+            <ul class="broken-list" id="brokenChains"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/vendor/perfect-scrollbar.jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/treant-js/1.0/Treant.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Check admin session (legacy: expects /api/auth/profile returns is_admin)
+    async function checkAdmin() {
+      const token = localStorage.getItem('token');
+      if (!token) return false;
+      const res = await fetch(window.API_BASE_URL + '/api/auth/profile', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!res.ok) return false;
+      const user = await res.json();
+      return user.is_admin;
+    }
+    async function loadUserTree() {
+      const token = localStorage.getItem('token');
+      const res = await fetch(window.API_BASE_URL + '/api/admin/user-tree', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      const data = await res.json();
+      const treeDiv = document.getElementById('userTree');
+      treeDiv.innerHTML = '';
+      renderTree(data, treeDiv);
+    }
+
+    async function loadBrokenChains() {
+      const token = localStorage.getItem('token');
+      // Fetch the user tree and flatten it
+      const res2 = await fetch(window.API_BASE_URL + '/api/admin/user-tree', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      const treeData = await res2.json();
+      let flat = [];
+      function flatten(node) {
+        if (!node) return;
+        flat.push(node);
+        if (node.children && node.children.length) node.children.forEach(flatten);
+      }
+      if (Array.isArray(treeData)) treeData.forEach(flatten); else flatten(treeData);
+      // Filter users with 0 or 1 children
+      const warnUsers = flat.filter(u => !u.is_admin && (!u.children || u.children.length <= 1));
+      const ul = document.getElementById('brokenChains');
+      ul.innerHTML = '';
+      if (warnUsers.length) {
+        warnUsers.forEach(u => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span class="fa fa-exclamation-triangle text-danger"></span> <b>${u.name}</b> <span class="text-muted">(${u.roll_no})</span>`;
+          ul.appendChild(li);
+        });
+      } else {
+        const li = document.createElement('li');
+        li.innerHTML = '<span class="text-success">No users with less than 2 referrals.</span>';
+        ul.appendChild(li);
+      }
+    }
+
+    document.getElementById('userSearchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const rollNo = document.getElementById('searchRollNo').value.trim();
+      if (!rollNo) return;
+      const token = localStorage.getItem('token');
+      const res = await fetch(window.API_BASE_URL + '/api/admin/user/' + encodeURIComponent(rollNo), {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      const detailsDiv = document.getElementById('userDetails');
+      if (!res.ok) {
+        detailsDiv.innerHTML = '<span class="text-danger">User not found.</span>';
+        return;
+      }
+      const user = await res.json();
+      // WhatsApp link logic
+      let whatsappLink = '';
+      if (user.phone) {
+        let phone = user.phone.replace(/\D/g, '');
+        if (phone.length === 10) phone = '92' + phone;
+        if (phone.length === 11 && phone.startsWith('0')) phone = '92' + phone.slice(1);
+        if (!phone.startsWith('92') && phone.length === 12) phone = '92' + phone.slice(-10);
+        whatsappLink = `<a href="https://wa.me/${phone}" target="_blank" class="btn btn-success btn-sm ms-2"><i class="fab fa-whatsapp"></i> WhatsApp</a>`;
+      }
+      detailsDiv.innerHTML = `
+        <div class="row">
+          <div class="col-md-6 mb-2"><b>Name:</b> ${user.name}</div>
+          <div class="col-md-6 mb-2"><b>Roll No:</b> ${user.roll_no}</div>
+          <div class="col-md-6 mb-2"><b>Email:</b> ${user.email}</div>
+          <div class="col-md-6 mb-2"><b>Phone:</b> ${user.phone || ''} ${whatsappLink}</div>
+          <div class="col-md-6 mb-2"><b>Referrer:</b> ${user.referrer_roll_no || 'None'}</div>
+          <div class="col-md-6 mb-2"><b>Admin:</b> ${user.is_admin ? '<span class="text-success">Yes</span>' : 'No'}</div>
+        </div>
+      `;
+    });
+
+    // Helper: convert referral tree to Treant.js config
+
+
+    // Example: fetch real data from backend
+    async function renderTreantTree() {
+      const token = localStorage.getItem('token');
+      const res = await fetch(window.API_BASE_URL + '/api/admin/user-tree', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      const data = await res.json();
+      drawTreantTree(data);
+    }
+
+    // D3.js tree with backend data and more interactivity
+    function renderD3Tree(treeData) {
+      const width = 1100, height = 600;
+      const svg = d3.select('#d3-canvas').html('').append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .call(d3.zoom().on('zoom', (event) => {
+          g.attr('transform', event.transform);
+        }));
+      const g = svg.append('g');
+
+      const root = d3.hierarchy(treeData);
+      const treeLayout = d3.tree().size([width - 200, height - 100]);
+      treeLayout(root);
+
+      // Draw links (center-to-center)
+      const cardW = 140, cardH = 120;
+      g.selectAll('.d3-link')
+        .data(root.links())
+        .enter().append('path')
+        .attr('class', 'd3-link')
+        .attr('fill', 'none')
+        .attr('stroke', '#b3c6ff')
+        .attr('stroke-width', 2)
+        .attr('d', d3.linkVertical()
+          .x(d => d.x + 100 + cardW/2)
+          .y(d => d.y + 40 + cardH/2));
+
+      // Draw nodes as cards
+      const node = g.selectAll('.d3-node')
+        .data(root.descendants())
+        .enter().append('g')
+        .attr('class', 'd3-node')
+        .attr('transform', d => `translate(${d.x + 100},${d.y + 40})`)
+        .on('mouseover', function() {
+          d3.select(this).select('rect').attr('stroke', '#ff9800').attr('stroke-width', 3);
+        })
+        .on('mouseout', function(event, d) {
+          // Restore red if flagged, else blue
+          const childrenCount = d.children ? d.children.length : 0;
+          d3.select(this).select('rect')
+            .attr('stroke', childrenCount < 2 ? '#e53935' : '#4f8cff')
+            .attr('stroke-width', 2);
+        })
+        .on('click', function(event, d) {
+          showD3UserModal(d.data);
+        });
+
+      node.append('rect')
+        .attr('class', 'd3-card')
+        .attr('width', 140)
+        .attr('height', 120)
+        .attr('rx', 14)
+        .attr('ry', 14)
+        .style('cursor', 'pointer')
+        .attr('stroke', d => ((d.children && d.children.length <= 1) || !d.children ? '#e53935' : '#4f8cff'))
+        .attr('stroke-width', 2);
+
+      // Profile SVG or warning icon based on referral rule
+      node.each(function(d) {
+        const g = d3.select(this);
+        const warn = !d.children || d.children.length <= 1;
+        if (warn) {
+          // Warning SVG (exclamation in circle)
+          g.append('svg')
+            .attr('x', cardW/2 - 18)
+            .attr('y', 14)
+            .attr('width', 36)
+            .attr('height', 36)
+            .attr('viewBox', '0 0 36 36')
+            .html(`
+              <circle cx="18" cy="18" r="18" fill="#fff3f2" stroke="#e53935" stroke-width="2"/>
+              <text x="18" y="24" text-anchor="middle" font-size="22" font-family="Arial" fill="#e53935" font-weight="bold">!</text>
+            `);
+        } else {
+          // Normal avatar SVG
+          g.append('svg')
+            .attr('x', cardW/2 - 28)
+            .attr('y', 10)
+            .attr('width', 56)
+            .attr('height', 56)
+            .attr('viewBox', '0 0 56 56')
+            .html(`
+              <circle cx="28" cy="28" r="28" fill="#e9ecef"/>
+              <circle cx="28" cy="22" r="10" fill="#fff"/>
+              <ellipse cx="28" cy="40" rx="14" ry="8" fill="#fff"/>
+              <circle cx="28" cy="22" r="10" stroke="#adb5bd" stroke-width="2" fill="none"/>
+              <ellipse cx="28" cy="40" rx="14" ry="8" stroke="#adb5bd" stroke-width="2" fill="none"/>
+            `);
+        }
+      });
+
+      node.append('title')
+        .text(d => `${d.data.name} (${d.data.roll_no})`);
+
+      node.append('text')
+        .attr('class', 'd3-label-name')
+        .attr('x', 70)
+        .attr('y', 75)
+        .text(d => d.data.name);
+
+      node.append('text')
+        .attr('class', 'd3-label-roll')
+        .attr('x', 70)
+        .attr('y', 95)
+        .text(d => d.data.roll_no);
+    }
+
+    // Show user details in a Bootstrap modal
+    function showD3UserModal(user) {
+      let modal = document.getElementById('d3UserModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.id = 'd3UserModal';
+        modal.tabIndex = -1;
+        modal.innerHTML = `
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="display:none;"></button>
+                <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close" style="position:absolute;right:1.2rem;top:1.2rem;font-size:2rem;line-height:1;color:#888;background:none;border:none;z-index:10;">&times;</button>
+              </div>
+              <div class="modal-body" id="d3UserModalBody"></div>
+            </div>
+          </div>`;
+        document.body.appendChild(modal);
+      }
+      // WhatsApp link logic
+      let whatsappLink = '';
+      if (user.phone) {
+        // Remove non-digits, add country code if needed (assume +92 for Pakistan if not present)
+        let phone = user.phone.replace(/\D/g, '');
+        if (phone.length === 10) phone = '92' + phone; // e.g. 3001234567 -> 923001234567
+        if (phone.length === 11 && phone.startsWith('0')) phone = '92' + phone.slice(1); // 03001234567 -> 923001234567
+        if (!phone.startsWith('92') && phone.length === 12) phone = '92' + phone.slice(-10); // fallback
+        whatsappLink = `<a href="https://wa.me/${phone}" target="_blank" class="btn btn-success mt-2"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>`;
+      }
+      // Modern SVG avatar for modal
+      const svgAvatar = `<svg width="64" height="64" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="28" fill="#e9ecef"/>
+        <circle cx="28" cy="22" r="10" fill="#fff"/>
+        <ellipse cx="28" cy="40" rx="14" ry="8" fill="#fff"/>
+        <circle cx="28" cy="22" r="10" stroke="#adb5bd" stroke-width="2" fill="none"/>
+        <ellipse cx="28" cy="40" rx="14" ry="8" stroke="#adb5bd" stroke-width="2" fill="none"/>
+      </svg>`;
+      document.getElementById('d3UserModalBody').innerHTML = `
+        <div class="text-center mb-3">
+          ${svgAvatar}
+          <div><b>${user.name}</b></div>
+          <div class="text-primary">${user.roll_no}</div>
+        </div>
+        <div><b>Email:</b> ${user.email || 'N/A'}</div>
+        <div><b>Phone:</b> ${user.phone || 'N/A'}</div>
+        <div><b>Referrer:</b> ${user.referrer_roll_no || 'None'}</div>
+        ${whatsappLink}
+      `;
+      const modalObj = bootstrap.Modal.getOrCreateInstance(modal);
+      modalObj.show();
+    }
+
+    // Fetch backend data and render D3 tree after admin check
+    async function renderD3TreeFromBackend() {
+      const token = localStorage.getItem('token');
+      const res = await fetch(window.API_BASE_URL + '/api/admin/user-tree', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      const data = await res.json();
+      // If multiple roots, wrap in dummy root
+      const treeData = Array.isArray(data) && data.length === 1 ? data[0] : { name: 'Root', roll_no: '', children: data };
+      renderD3Tree(treeData);
+    }
+
+    // Init
+    (async function() {
+      const isAdmin = await checkAdmin();
+      if (!isAdmin) {
+        document.getElementById('admin-auth-warning').style.display = '';
+        return;
+      }
+      document.getElementById('admin-content').style.display = '';
+      loadUserTree();
+      loadBrokenChains();
+      renderTreantTree();
+      renderD3TreeFromBackend();
+    })();
+  </script>
+</body>
+</html>

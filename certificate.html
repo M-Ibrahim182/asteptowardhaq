@@ -463,7 +463,7 @@
 							html += eligible.map(course => `
 					<div class="cert-card">
 						<b>${course.name}</b><br>
-						<button onclick="downloadCertificate(${course.id})">Download Certificate</button>
+						<button type="button" onclick="downloadCertificate(${course.id})">Download Certificate</button>
 					</div>
 				`).join('');
 						}
@@ -485,25 +485,52 @@
 
 				// Download certificate function
 				window.downloadCertificate = function (courseId) {
-					fetch(window.API_BASE_URL + "/api/test/certificate/download?course=${courseId}", {
+					console.log('[DEBUG] Downloading certificate from:', courseId);
+					console.log('[DEBUG] Token being sent:', token);
+					fetch(window.API_BASE_URL + "/api/test/certificate/download?course=" + courseId, {
 						headers: { 'Authorization': 'Bearer ' + token }
 					})
 						.then(res => {
 							if (!res.ok) throw new Error('Certificate not ready');
+						.then(async res => {
+							console.log('[DEBUG] Full response:', res);
+							console.log('[DEBUG] Response status:', res.status, res.statusText);
+							console.log('[DEBUG] Response headers:');
+							for (let pair of res.headers.entries()) {
+								console.log('   ', pair[0] + ':', pair[1]);
+							}
+							const contentType = res.headers.get('content-type');
+							console.log('[DEBUG] Content-Type:', contentType);
+							if (!res.ok) {
+								// Try to read error message as text
+								const errText = await res.text();
+								console.error('[DEBUG] Error response text:', errText);
+								throw new Error('Certificate not ready: ' + errText);
+							}
+							// If not image/png, log the text for debugging
+							if (!contentType || !contentType.includes('image/png')) {
+								//const text = await res.text();
+								//console.warn('[DEBUG] Response is not PNG. Text:', text);
+								//alert('Unexpected response: ' + text);
+								throw new Error('Response is not a PNG');
+							}
 							return res.blob();
 						})
 						.then(blob => {
+							console.log('[DEBUG] Received blob:', blob);
 							const url = window.URL.createObjectURL(blob);
 							const a = document.createElement('a');
 							a.href = url;
-							a.download = 'certificate.pdf';
+							a.download = 'certificate.png';
 							document.body.appendChild(a);
 							a.click();
 							a.remove();
 							window.URL.revokeObjectURL(url);
+							console.log('[DEBUG] Download triggered');
 						})
-						.catch(() => {
-							alert('Certificate not available yet.');
+						.catch((err) => {
+							console.error('[DEBUG] Download error:', err);
+							alert('Certificate not available yet. ' + (err && err.message ? err.message : ''));
 						});
 				}
 
