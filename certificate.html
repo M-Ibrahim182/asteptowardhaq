@@ -490,8 +490,6 @@
 					fetch(window.API_BASE_URL + "/api/test/certificate/download?course=" + courseId, {
 						headers: { 'Authorization': 'Bearer ' + token }
 					})
-						.then(res => {
-							if (!res.ok) throw new Error('Certificate not ready');
 						.then(async res => {
 							console.log('[DEBUG] Full response:', res);
 							console.log('[DEBUG] Response status:', res.status, res.statusText);
