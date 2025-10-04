@@ -151,7 +151,7 @@
 
 .main-header .main-box .logo-box .logo img{
 	display:inline-block;
-	max-width:100%;
+	max-width: 30px;
 	-webkit-transition:all 300ms ease;
 	-ms-transition:all 300ms ease;
 	-o-transition:all 300ms ease;
@@ -962,7 +962,9 @@
 }
 
 .mobile-menu .nav-logo img{
-	max-width:200px;
+	max-width: 200px;
+	width: 100%;
+	height: auto;
 }
 
 .mobile-menu-visible{
