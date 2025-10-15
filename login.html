@@ -16,20 +16,22 @@
 	<link href="assets/css/responsive.css" rel="stylesheet">
 	<link rel="stylesheet" href="test.css">
 	<style>
-	.main-footer {
-		width: 100vw;
-		position: relative;
-		box-sizing: border-box;
-	}
-	@media (max-width: 1200px) {
 		.main-footer {
-			left: 0;
-			right: 0;
-			margin-left: 0;
-			margin-right: 0;
-			width: 100%;
+			width: 100vw;
+			position: relative;
+			box-sizing: border-box;
 		}
-	}
+
+		@media (max-width: 1200px) {
+			.main-footer {
+				left: 0;
+				right: 0;
+				margin-left: 0;
+				margin-right: 0;
+				width: 100%;
+			}
+		}
+
 		body {
 			min-height: 100vh;
 			display: flex;
@@ -38,22 +40,25 @@
 			align-items: center;
 			background: #f7f8fa;
 		}
+
 		.login {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			min-height: 80vh;
 		}
+
 		.login-container {
 			background: #fff;
 			border-radius: 12px;
-			box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 			padding: 2.5rem 2rem 2rem 2rem;
 			max-width: 370px;
 			width: 100%;
 			margin: 0 auto;
 			text-align: center;
 		}
+
 		.login-container h1 {
 			font-size: 2.2rem;
 			font-weight: 700;
@@ -61,10 +66,12 @@
 			color: #222;
 			letter-spacing: -1px;
 		}
+
 		.login-container .input-group {
 			margin-bottom: 1.2rem;
 			text-align: left;
 		}
+
 		.login-container input[type="email"],
 		.login-container input[type="password"] {
 			width: 100%;
@@ -77,26 +84,31 @@
 			margin-bottom: 0.2rem;
 			transition: border 0.2s;
 		}
+
 		.login-container input[type="email"]:focus,
 		.login-container input[type="password"]:focus {
 			border: 1.5px solid #f7b731;
 			outline: none;
 		}
+
 		.signup-text {
 			margin-bottom: 0.5rem;
 			font-size: 1rem;
 		}
+
 		#loginError {
 			color: #e74c3c;
 			font-size: 0.98rem;
 			margin-bottom: 0.5rem;
 			min-height: 1.2em;
 		}
+
 		@media (max-width: 500px) {
 			.login-container {
 				padding: 1.2rem 0.7rem 1.5rem 0.7rem;
 				max-width: 98vw;
 			}
+
 			.login-container h1 {
 				font-size: 1.5rem;
 			}
@@ -147,8 +159,7 @@
 							</div>
 							<img src="assets/images/icons/bismillah.png" class="plass">
 							<ul class="header-top_list-two">
-								<li><span class="icon fa-regular fa-sun fa-fw"></span>Sunrise At: 5:15 AM</li>
-								<li><span class="icon fa-solid fa-moon fa-fw"></span>Sunset At: 4:50 PM</li>
+
 								<li><span class="icon fa-solid fa-phone fa-fw"></span>Let’s Talk +92 326 1420047</li>
 							</ul>
 						</div>
@@ -189,6 +200,7 @@
 											<li><a href="scholars.html">Scholars</a></li>
 											<li><a href="about.html">About</a></li>
 											<li><a href="contact.html">Contact</a></li>
+											<li><a href="login.html">Log In</a></li>
 										</ul>
 									</div>
 								</nav>
@@ -246,21 +258,22 @@
 
 		<!-- Page Title -->
 		<section class="page-title" style="background-image:url(assets/images/background/page-title.jpg)">
-				<div class="login-container">
-					<h1>Log In</h1>
-					<form action="#" method="POST" autocomplete="on">
-						<div class="input-group">
-							<label for="email">Email</label>
-							<input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" />
-						</div>
-						<div class="input-group">
-							<label for="password">Password</label>
-							<input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password" />
-						</div>
-						<p class="signup-text">
-							Don't have an account? <a href="signup.html">Sign up.</a>
-						</p>
-						<div id="loginError"></div>
+			<div class="login-container">
+				<h1>Log In</h1>
+				<form action="#" method="POST" autocomplete="on">
+					<div class="input-group">
+						<label for="email">Email</label>
+						<input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" />
+					</div>
+					<div class="input-group">
+						<label for="password">Password</label>
+						<input type="password" id="password" name="password" placeholder="Password" required
+							autocomplete="current-password" />
+					</div>
+					<p class="signup-text">
+						Don't have an account? <a href="signup.html">Sign up.</a>
+					</p>
+					<div id="loginError"></div>
 					<div class="btn">
 						<button type="submit" class="theme-btn btn-style-four" style="text-decoration: none;"><span
 								class="btn-wrap">
@@ -269,134 +282,133 @@
 							</span></button>
 
 					</div>
-					</form>
-				</div>
-					</p>
-					<div id="loginError" style="color: red; margin-bottom: 10px;"></div>
-
 				</form>
 			</div>
-		</div>
-		<!-- Footer Style -->
-		<footer class="main-footer">
-			<div class="footer_bg-image" style="background-image: url(assets/images/background/footer-bg.jpg)"></div>
-			<div class="auto-container">
-				<div class="inner-container">
-					<!-- Widgets Section -->
-					<div class="widgets-section">
-						<div class="row clearfix">
+			</p>
+			<div id="loginError" style="color: red; margin-bottom: 10px;"></div>
 
-							<!-- Big Column -->
-							<div class="big-column col-lg-6 col-md-12 col-sm-12">
-								<div class="row clearfix">
+			</form>
+	</div>
+	</div>
+	<!-- Footer Style -->
+	<footer class="main-footer">
+		<div class="footer_bg-image" style="background-image: url(assets/images/background/footer-bg.jpg)"></div>
+		<div class="auto-container">
+			<div class="inner-container">
+				<!-- Widgets Section -->
+				<div class="widgets-section">
+					<div class="row clearfix">
 
-									<!-- Footer Column -->
-									<div class="footer-column col-lg-6 col-md-6 col-sm-12">
-										<div class="footer-widget logo-widget">
-											<div class="footer-logo"><a href="index.html"><img
-														src="assets/images/footer-logo.png" style="width: 60%;"></a>
+						<!-- Big Column -->
+						<div class="big-column col-lg-6 col-md-12 col-sm-12">
+							<div class="row clearfix">
+
+								<!-- Footer Column -->
+								<div class="footer-column col-lg-6 col-md-6 col-sm-12">
+									<div class="footer-widget logo-widget">
+										<div class="footer-logo"><a href="index.html"><img
+													src="assets/images/footer-logo.png" style="width: 60%;"></a>
+										</div>
+										<!-- Footer List -->
+										<div class="footer_list">
+											<li>+92 326 1420047</li>
+										</div>
+										<!-- Social Box -->
+										<div class="footer_socials">
+											<div>
+												<a href="https://facebook.com/"><i
+														class="fa-brands fa-facebook-f"></i></a>
+												<a href="https://wa.me/+923261420047"><i
+														class="fa-brands fa-whatsapp"></i></a>
+												<a href="https://youtube.com/@a_step_towards_haq?si=iiLH6sLAEjM-aUw0"><i
+														class="fa-brands fa-youtube"></i></a>
 											</div>
-											<!-- Footer List -->
-											<div class="footer_list">
-												<li>+92 326 1420047</li>
-											</div>
-											<!-- Social Box -->
-											<div class="footer_socials">
-												<div>
-													<a href="https://facebook.com/"><i
-															class="fa-brands fa-facebook-f"></i></a>
-													<a href="https://wa.me/+923261420047"><i
-															class="fa-brands fa-whatsapp"></i></a>
-													<a
-														href="https://youtube.com/@a_step_towards_haq?si=iiLH6sLAEjM-aUw0"><i
-															class="fa-brands fa-youtube"></i></a>
-												</div>
-												<div class=".he" style="margin-top: 4px;">
-													<a
-														href="https://www.snapchat.com/add/asteptowardshaq?share_id=QT5D7OeFhWg&locale=en-GB"><i
-															class="fa-brands fa-snapchat"></i></a>
-													<a
-														href="https://www.tiktok.com/@a_step_towards_haq?_t=ZS-8sqeo7VFicC&_r=1"><i
-															class="fa-brands fa-tiktok"></i></a>
-													<a href="https://instagram.com/"><i
-															class="fa-brands fa-instagram"></i></a>
-												</div>
+											<div class=".he" style="margin-top: 4px;">
+												<a
+													href="https://www.snapchat.com/add/asteptowardshaq?share_id=QT5D7OeFhWg&locale=en-GB"><i
+														class="fa-brands fa-snapchat"></i></a>
+												<a
+													href="https://www.tiktok.com/@a_step_towards_haq?_t=ZS-8sqeo7VFicC&_r=1"><i
+														class="fa-brands fa-tiktok"></i></a>
+												<a href="https://instagram.com/"><i
+														class="fa-brands fa-instagram"></i></a>
 											</div>
 										</div>
 									</div>
-
-									<!-- Footer Column -->
-									<div class="footer-column col-lg-6 col-md-6 col-sm-12">
-										<div class="footer-widget links-widget">
-											<h4 class="footer-title">Links</h4>
-											<ul class="footer-list">
-												<li><a href="about.html">About us</a></li>
-												<li><a href="scholars.html">Scholars</a></li>
-												<li><a href="courses.html">Courses</a></li>
-												<li><a href="contact.html">Contact</a></li>
-											</ul>
-										</div>
-									</div>
-
 								</div>
+
+								<!-- Footer Column -->
+								<div class="footer-column col-lg-6 col-md-6 col-sm-12">
+									<div class="footer-widget links-widget">
+										<h4 class="footer-title">Links</h4>
+										<ul class="footer-list">
+											<li><a href="about.html">About us</a></li>
+											<li><a href="scholars.html">Scholars</a></li>
+											<li><a href="courses.html">Courses</a></li>
+											<li><a href="contact.html">Contact</a></li>
+										</ul>
+									</div>
+								</div>
+
 							</div>
+						</div>
 
-							<!-- Big Column -->
-							<div class="big-column col-lg-6 col-md-12 col-sm-12">
-								<div class="row clearfix">
+						<!-- Big Column -->
+						<div class="big-column col-lg-6 col-md-12 col-sm-12">
+							<div class="row clearfix">
 
-									<!-- Footer Column -->
-									<div class="footer-column col-lg-6 col-md-6 col-sm-12">
-										<div class="footer-widget links-widget">
-											<h4 class="footer-title">Other Link</h4>
-											<ul class="footer-list">
-												<li><a href="#">Online Courses</a></li>
-												<li><a href="#">Audio Listening</a></li>
-												<li><a href="login.html">Certificate</a></li>
-											</ul>
-										</div>
+								<!-- Footer Column -->
+								<div class="footer-column col-lg-6 col-md-6 col-sm-12">
+									<div class="footer-widget links-widget">
+										<h4 class="footer-title">Other Link</h4>
+										<ul class="footer-list">
+											<li><a href="#">Online Courses</a></li>
+											<li><a href="#">Audio Listening</a></li>
+											<li><a href="login.html">Certificate</a></li>
+										</ul>
 									</div>
-
-									<!-- Footer Column -->
-									<div class="footer-column col-lg-6 col-md-6 col-sm-12">
-										<div class="footer-widget newsletter-widget">
-											<h4 class="footer-title">newsletter</h4>
-											<div class="footer-text">Waiting for your message!</div>
-											<div class="newsletter-box">
-												<form method="post"
-													action="https://themazine.com/html/alquran/contact.html">
-													<div class="form-group">
-														<input type="email" name="search-field" value=""
-															placeholder="email address" required>
-														<button type="submit"
-															class="theme-btn fa-regular fa-paper-plane fa-fw"></button>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>
-
 								</div>
+
+								<!-- Footer Column -->
+								<div class="footer-column col-lg-6 col-md-6 col-sm-12">
+									<div class="footer-widget newsletter-widget">
+										<h4 class="footer-title">newsletter</h4>
+										<div class="footer-text">Waiting for your message!</div>
+										<div class="newsletter-box">
+											<form method="post"
+												action="https://themazine.com/html/alquran/contact.html">
+												<div class="form-group">
+													<input type="email" name="search-field" value=""
+														placeholder="email address" required>
+													<button type="submit"
+														class="theme-btn fa-regular fa-paper-plane fa-fw"></button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</footer>
-		<!-- End Footer Style -->
-
-		<!-- Search Popup -->
-		<div class="search-popup">
-			<div class="color-layer"></div>
-			<button class="close-search"><span class="flaticon-close-1"></span></button>
-			<form method="post" action="https://themazine.com/html/alquran/blog.html">
-				<div class="form-group">
-					<input type="search" name="search-field" value="" placeholder="Search Here" required="">
-					<button class="fa fa-solid fa-magnifying-glass fa-fw" type="submit"></button>
-				</div>
-			</form>
 		</div>
-		<!-- End Search Popup -->
+	</footer>
+	<!-- End Footer Style -->
+
+	<!-- Search Popup -->
+	<div class="search-popup">
+		<div class="color-layer"></div>
+		<button class="close-search"><span class="flaticon-close-1"></span></button>
+		<form method="post" action="https://themazine.com/html/alquran/blog.html">
+			<div class="form-group">
+				<input type="search" name="search-field" value="" placeholder="Search Here" required="">
+				<button class="fa fa-solid fa-magnifying-glass fa-fw" type="submit"></button>
+			</div>
+		</form>
+	</div>
+	<!-- End Search Popup -->
 
 	</div>
 	<!-- End PageWrapper -->

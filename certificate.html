@@ -268,8 +268,7 @@
 							</div>
 							<img src="assets/images/icons/bismillah.png" class="plass">
 							<ul class="header-top_list-two">
-								<li><span class="icon fa-regular fa-sun fa-fw"></span>Sunrise At: 5:15 AM</li>
-								<li><span class="icon fa-solid fa-moon fa-fw"></span>Sunset At: 4:50 PM</li>
+
 								<li><span class="icon fa-solid fa-phone fa-fw"></span>Let’s Talk +92 326 1420047</li>
 							</ul>
 						</div>
@@ -283,11 +282,12 @@
 					<div class="inner-container">
 						<div class="d-flex justify-content-between align-items-center flex-wrap">
 
-							<div class="logo-box">
-								<div class="logo"><a href="index.html"><img class="logo" src="assets/images/logo.png"
-											alt="" title=""></a></div>
+						<div class="d-flex align-items-center" style="gap:10px;">
+							<div class="logo-box" style="margin-bottom:0;">
+								<div class="logo"><a href="index.html"><img class="logo" src="assets/images/logo.png" alt="" title=""></a></div>
 							</div>
-
+							<div class="mobile-nav-toggler d-block d-md-none" style="margin-left:8px;"><span class="icon flaticon-menu"></span></div>
+						</div>
 							<div class="nav-outer">
 								<!-- Main Menu -->
 								<nav class="main-menu navbar-expand-md">
@@ -310,7 +310,7 @@
 											<li><a href="scholars.html">Scholars</a></li>
 											<li><a href="about.html">About</a></li>
 											<li><a href="contact.html">Contact</a></li>
-											<li><a href="login.html">Login</a></li>
+											<li><a href="login.html">Login/Profile</a></li>
 										</ul>
 									</div>
 								</nav>
@@ -337,9 +337,6 @@
 										</span>
 									</a>
 								</div>
-
-								<!-- Mobile Navigation Toggler -->
-								<div class="mobile-nav-toggler"><span class="icon flaticon-menu"></span></div>
 							</div>
 
 						</div>
@@ -428,87 +425,6 @@
 				</div>
 			</div>
 
-			<script src="config.js"></script>
-			<script>
-				// Require login for certificate page
-				const token = localStorage.getItem('token');
-				if (!token) {
-					window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
-				}
-
-				// Fetch eligible courses for certificate
-				async function loadEligibleCourses() {
-					const certMsg = document.getElementById('cert-message');
-					const eligibleDiv = document.getElementById('eligible-courses');
-					certMsg.textContent = '';
-					eligibleDiv.innerHTML = '<div>Loading your certificates...</div>';
-					try {
-						// Fetch both eligible and already-issued certificates
-						const res = await fetch(window.API_BASE_URL + "/api/test/eligible-certificates", {
-							headers: { 'Authorization': 'Bearer ' + token }
-						});
-						if (!res.ok) throw new Error('Failed to fetch');
-						const data = await res.json();
-						// data: { courses: [...], issued: [...] }
-						const eligible = data.courses || [];
-						const issued = data.issued || [];
-						let html = '';
-						if (eligible.length === 0 && issued.length === 0) {
-							eligibleDiv.innerHTML = '';
-							certMsg.textContent = 'You are not eligible for any certificates yet. Complete a course and pass the test!';
-							return;
-						}
-						if (eligible.length > 0) {
-							html += '<div class="cert-section-title">Eligible for Certificate</div>';
-							html += eligible.map(course => `
-					<div class="cert-card">
-						<b>${course.name}</b><br>
-						<button onclick="downloadCertificate(${course.id})">Download Certificate</button>
-					</div>
-				`).join('');
-						}
-						if (issued.length > 0) {
-							html += '<div class="cert-section-title">Certificates Already Issued</div>';
-							html += issued.map(course => `
-					<div class="cert-card issued">
-						<b>${course.name}</b><br>
-						<button onclick="downloadCertificate(${course.id})">Download Again</button>
-					</div>
-				`).join('');
-						}
-						eligibleDiv.innerHTML = html;
-					} catch (e) {
-						eligibleDiv.innerHTML = '';
-						certMsg.textContent = 'Error loading certificates.';
-					}
-				}
-
-				// Download certificate function
-				window.downloadCertificate = function (courseId) {
-					fetch(window.API_BASE_URL + "/api/test/certificate/download?course=${courseId}", {
-						headers: { 'Authorization': 'Bearer ' + token }
-					})
-						.then(res => {
-							if (!res.ok) throw new Error('Certificate not ready');
-							return res.blob();
-						})
-						.then(blob => {
-							const url = window.URL.createObjectURL(blob);
-							const a = document.createElement('a');
-							a.href = url;
-							a.download = 'certificate.pdf';
-							document.body.appendChild(a);
-							a.click();
-							a.remove();
-							window.URL.revokeObjectURL(url);
-						})
-						.catch(() => {
-							alert('Certificate not available yet.');
-						});
-				}
-
-				loadEligibleCourses();
-			</script>
 		</div>
 		<!-- Footer Style -->
 		<footer class="main-footer">
@@ -665,6 +581,107 @@
 	<script src="assets/js/jquery-ui.js"></script>
 	<script src="assets/js/element-in-view.js"></script>
 	<script src="assets/js/script.js"></script>
+				<script src="config.js"></script>
+			<script>
+				// Require login for certificate page
+				const token = localStorage.getItem('token');
+				if (!token) {
+					window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+				}
+
+				// Fetch eligible courses for certificate
+				async function loadEligibleCourses() {
+					const certMsg = document.getElementById('cert-message');
+					const eligibleDiv = document.getElementById('eligible-courses');
+					certMsg.textContent = '';
+					eligibleDiv.innerHTML = '<div>Loading your certificates...</div>';
+					try {
+						// Fetch both eligible and already-issued certificates
+						const res = await fetch(window.API_BASE_URL + "/api/test/eligible-certificates", {
+							headers: { 'Authorization': 'Bearer ' + token }
+						});
+						if (!res.ok) throw new Error('Failed to fetch');
+						const data = await res.json();
+						// data: { courses: [...], issued: [...] }
+						const eligible = data.courses || [];
+						const issued = data.issued || [];
+						let html = '';
+						if (eligible.length === 0 && issued.length === 0) {
+							eligibleDiv.innerHTML = '';
+							certMsg.textContent = 'You are not eligible for any certificates yet. Complete a course and pass the test!';
+							return;
+						}
+						if (eligible.length > 0) {
+							html += '<div class="cert-section-title">Eligible for Certificate</div>';
+							html += eligible.map(course => `
+					<div class="cert-card">
+						<b>${course.name}</b><br>
+						<button type="button" onclick="downloadCertificate(${course.id}, event)">Download Certificate</button>
+					</div>
+				`).join('');
+						}
+						if (issued.length > 0) {
+							html += '<div class="cert-section-title">Certificates Already Issued</div>';
+							html += issued.map(course => `
+					<div class="cert-card issued">
+						<b>${course.name}</b><br>
+						<button onclick="downloadCertificate(${course.id}, event)">Download Again</button>
+					</div>
+				`).join('');
+						}
+						eligibleDiv.innerHTML = html;
+					} catch (e) {
+						eligibleDiv.innerHTML = '';
+						certMsg.textContent = 'Error loading certificates.';
+					}
+				}
+
+				// Download certificate function
+				window.downloadCertificate = function (courseId, event) {
+					let btn = event && event.target ? event.target : null;
+					const originalText = btn ? btn.textContent : '';
+					if (btn) {
+						btn.textContent = 'Please wait...';
+						btn.disabled = true;
+					}
+					fetch(window.API_BASE_URL + "/api/test/certificate/download?course=" + courseId, {
+						headers: { 'Authorization': 'Bearer ' + token }
+					})
+						.then(async res => {
+							const contentType = res.headers.get('content-type');
+							if (!res.ok) {
+								throw new Error('Certificate not ready: ' + (await res.text()));
+							}
+							if (!contentType || !contentType.includes('image/png')) {
+								throw new Error('Response is not a PNG');
+							}
+							return res.blob();
+						})
+						.then(blob => {
+							const url = window.URL.createObjectURL(blob);
+							const a = document.createElement('a');
+							a.href = url;
+							a.download = 'certificate.png';
+							document.body.appendChild(a);
+							a.click();
+							a.remove();
+							window.URL.revokeObjectURL(url);
+						})
+						.catch((err) => {
+							alert('Certificate not available yet. ' + (err && err.message ? err.message : ''));
+						})
+						.finally(() => {
+							setTimeout(() => {
+								if (btn) {
+									btn.textContent = originalText;
+									btn.disabled = false;
+								}
+							}, 2000);
+						});
+				}
+
+				loadEligibleCourses();
+			</script>
 
 </body>
 

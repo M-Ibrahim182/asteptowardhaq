@@ -56,8 +56,7 @@
 							</div>
 							<img src="assets/images/icons/bismillah.png" class="plass">
 							<ul class="header-top_list-two">
-								<li><span class="icon fa-regular fa-sun fa-fw"></span>Sunrise At: 5:15 AM</li>
-								<li><span class="icon fa-solid fa-moon fa-fw"></span>Sunset At: 4:50 PM</li>
+
 								<li><span class="icon fa-solid fa-phone fa-fw"></span>Let’s Talk +92 326 1420047</li>
 							</ul>
 						</div>
@@ -71,10 +70,12 @@
 					<div class="inner-container">
 						<div class="d-flex justify-content-between align-items-center flex-wrap">
 
-							<div class="logo-box">
-								<div class="logo"><a href="index.html"><img class="logo" src="assets/images/logo.png"
-											alt="" title=""></a></div>
+						<div class="d-flex align-items-center" style="gap:10px;">
+							<div class="logo-box" style="margin-bottom:0;">
+								<div class="logo"><a href="index.html"><img class="logo" src="assets/images/logo.png" alt="" title=""></a></div>
 							</div>
+							<div class="mobile-nav-toggler d-block d-md-none" style="margin-left:8px;"><span class="icon flaticon-menu"></span></div>
+						</div>
 
 							<div class="nav-outer">
 								<!-- Main Menu -->
@@ -98,6 +99,7 @@
 											<li><a href="scholars.html">Scholars</a></li>
 											<li><a href="about.html">About</a></li>
 											<li><a href="contact.html">Contact</a></li>
+											<li><a href="login.html">Login/Profile</a></li>
 										</ul>
 									</div>
 								</nav>
@@ -126,7 +128,6 @@
 								</div>
 
 								<!-- Mobile Navigation Toggler -->
-								<div class="mobile-nav-toggler"><span class="icon flaticon-menu"></span></div>
 							</div>
 
 						</div>
@@ -358,15 +359,15 @@
 				.then(data => {
 					const container = document.getElementById('courses-container');
 					container.innerHTML = '';
-							 data.forEach(course => {
-									 const courseCard = document.createElement('div');
-									 courseCard.className = 'course-block_two col-lg-4 col-md-6 col-sm-12';
-									 // Check MCQ availability for this course
-									 fetch(window.API_BASE_URL + `/api/test/mcqs/${course.id}`)
-										 .then(res => res.json())
-										 .then(mcqData => {
-											 const hasMCQ = mcqData.questions && mcqData.questions.length > 0;
-											 courseCard.innerHTML = `
+					data.forEach(course => {
+						const courseCard = document.createElement('div');
+						courseCard.className = 'course-block_two col-lg-4 col-md-6 col-sm-12';
+						// Check MCQ availability for this course
+						fetch(window.API_BASE_URL + `/api/test/mcqs/${course.id}`)
+							.then(res => res.json())
+							.then(mcqData => {
+								const hasMCQ = mcqData.questions && mcqData.questions.length > 0;
+								courseCard.innerHTML = `
 												 <div class="course-block_two-inner wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1000ms">
 													 <div class="course-block_two-image" style="position:relative;">
 														 <a href="course-detail.html?course_id=${course.id}"><img src="${course.image_url || 'assets/images/resource/course-5.jpg'}" alt="" /></a>
@@ -385,11 +386,11 @@
 													 </div>
 												 </div>
 											 `;
-											 container.appendChild(courseCard);
-										 })
-										 .catch(() => {
-											 // If MCQ check fails, show Coming Soon badge
-											 courseCard.innerHTML = `
+								container.appendChild(courseCard);
+							})
+							.catch(() => {
+								// If MCQ check fails, show Coming Soon badge
+								courseCard.innerHTML = `
 												 <div class="course-block_two-inner wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1000ms">
 													 <div class="course-block_two-image" style="position:relative;">
 														 <a href="course-detail.html?course_id=${course.id}"><img src="${course.image_url || 'assets/images/resource/course-5.jpg'}" alt="" /></a>
@@ -408,9 +409,9 @@
 													 </div>
 												 </div>
 											 `;
-											 container.appendChild(courseCard);
-										 });
-							 });
+								container.appendChild(courseCard);
+							});
+					});
 				})
 				.catch(err => {
 					document.getElementById('courses-container').innerHTML = '<p>Error loading courses.</p>';

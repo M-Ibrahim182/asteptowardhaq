@@ -143,8 +143,7 @@
 							</div>
 							<img src="assets/images/icons/bismillah.png" class="plass">
 							<ul class="header-top_list-two">
-								<li><span class="icon fa-regular fa-sun fa-fw"></span>Sunrise At: 5:15 AM</li>
-								<li><span class="icon fa-solid fa-moon fa-fw"></span>Sunset At: 4:50 PM</li>
+
 								<li><span class="icon fa-solid fa-phone fa-fw"></span>Let’s Talk +92 326 1420047</li>
 							</ul>
 						</div>
@@ -158,11 +157,12 @@
 					<div class="inner-container">
 						<div class="d-flex justify-content-between align-items-center flex-wrap">
 
-							<div class="logo-box">
-								<div class="logo"><a href="index.html"><img class="logo" src="assets/images/logo.png"
-											alt="" title=""></a></div>
+						<div class="d-flex align-items-center" style="gap:10px;">
+							<div class="logo-box" style="margin-bottom:0;">
+								<div class="logo"><a href="index.html"><img class="logo" src="assets/images/logo.png" alt="" title=""></a></div>
 							</div>
-
+							<div class="mobile-nav-toggler d-block d-md-none" style="margin-left:8px;"><span class="icon flaticon-menu"></span></div>
+						</div>
 							<div class="nav-outer">
 								<!-- Main Menu -->
 								<nav class="main-menu navbar-expand-md">
@@ -184,6 +184,7 @@
 											<li><a href="scholars.html">Scholars</a></li>
 											<li><a href="about.html">About</a></li>
 											<li><a href="contact.html">Contact</a></li>
+											<li><a href="login.html">Login/Profile</a></li>
 										</ul>
 									</div>
 								</nav>
@@ -210,9 +211,6 @@
 										</span>
 									</a>
 								</div>
-
-								<!-- Mobile Navigation Toggler -->
-								<div class="mobile-nav-toggler"><span class="icon flaticon-menu"></span></div>
 							</div>
 
 						</div>
@@ -556,73 +554,73 @@
 			});
 			// Check if MCQs exist for this course before showing test button
 			fetch(window.API_BASE_URL + `/api/test/mcqs/${courseId}`)
-			  .then(res => res.json())
-			  .then(data => {
-				if (data.questions && data.questions.length > 0) {
-				  // Add test button
-				  const testDiv = document.createElement('div');
-				  testDiv.style.marginTop = '40px';
-				  testDiv.style.textAlign = 'center';
-				  testDiv.style.gridColumn = '1 / -1';
-				  testDiv.innerHTML = `<a href="#" class="btn" id="testBtn">Watch All Videos for test</a>`;
-				  container.appendChild(testDiv);
-				  // Progress logic
-				  const videoCheckboxes = container.querySelectorAll('.form-check input[type="checkbox"]');
-				  const totalVideos = videoCheckboxes.length;
-				  const testBtn = container.querySelector('#testBtn');
-				  // Set saved progress (check completed checkboxes)
-				  for (let i = 0; i < completedVideosCount && i < videoCheckboxes.length; i++) {
-					  videoCheckboxes[i].checked = true;
-				  }
-				  function getCompletedVideos() {
-					  return Array.from(videoCheckboxes).filter(cb => cb.checked).length;
-				  }
-				  function updateProgress() {
-					  const completed = getCompletedVideos();
-					  if (testBtn) {
-						  if (completed === totalVideos) {
-							  testBtn.textContent = "Start Test";
-							  testBtn.onclick = function (e) {
-								  e.preventDefault();
-								  window.location.href = `test.html?course_id=${courseId}`;
-							  };
-							  testBtn.classList.add("btn-success");
-						  } else {
-							  testBtn.textContent = "Watch All Videos for test";
-							  testBtn.onclick = function (e) { e.preventDefault(); };
-							  testBtn.classList.remove("btn-success");
-						  }
-					  }
-					  saveProgress(courseId, completed);
-				  }
-				  function saveProgress(courseId, completedVideos) {
-					  if (!token) return;
-					  fetch(window.API_BASE_URL + "/api/courses/progress", {
-						  method: 'POST',
-						  headers: {
-							  'Content-Type': 'application/json',
-							  'Authorization': 'Bearer ' + token
-						  },
-						  body: JSON.stringify({
-							  course_id: courseId,
-							  completed_videos: completedVideos
-						  })
-					  });
-				  }
-				  videoCheckboxes.forEach(input => {
-					  input.addEventListener('change', updateProgress);
-				  });
-				  updateProgress();
-				} else {
-				  // Show message if no test is available
-				  const msgDiv = document.createElement('div');
-				  msgDiv.style.marginTop = '40px';
-				  msgDiv.style.textAlign = 'center';
-				  msgDiv.style.gridColumn = '1 / -1';
-				  msgDiv.innerHTML = `<span class="text-warning">Test for this course will be available soon.</span>`;
-				  container.appendChild(msgDiv);
-				}
-			  });
+				.then(res => res.json())
+				.then(data => {
+					if (data.questions && data.questions.length > 0) {
+						// Add test button
+						const testDiv = document.createElement('div');
+						testDiv.style.marginTop = '40px';
+						testDiv.style.textAlign = 'center';
+						testDiv.style.gridColumn = '1 / -1';
+						testDiv.innerHTML = `<a href="#" class="btn" id="testBtn">Watch All Videos for test</a>`;
+						container.appendChild(testDiv);
+						// Progress logic
+						const videoCheckboxes = container.querySelectorAll('.form-check input[type="checkbox"]');
+						const totalVideos = videoCheckboxes.length;
+						const testBtn = container.querySelector('#testBtn');
+						// Set saved progress (check completed checkboxes)
+						for (let i = 0; i < completedVideosCount && i < videoCheckboxes.length; i++) {
+							videoCheckboxes[i].checked = true;
+						}
+						function getCompletedVideos() {
+							return Array.from(videoCheckboxes).filter(cb => cb.checked).length;
+						}
+						function updateProgress() {
+							const completed = getCompletedVideos();
+							if (testBtn) {
+								if (completed === totalVideos) {
+									testBtn.textContent = "Start Test";
+									testBtn.onclick = function (e) {
+										e.preventDefault();
+										window.location.href = `test.html?course_id=${courseId}`;
+									};
+									testBtn.classList.add("btn-success");
+								} else {
+									testBtn.textContent = "Watch All Videos for test";
+									testBtn.onclick = function (e) { e.preventDefault(); };
+									testBtn.classList.remove("btn-success");
+								}
+							}
+							saveProgress(courseId, completed);
+						}
+						function saveProgress(courseId, completedVideos) {
+							if (!token) return;
+							fetch(window.API_BASE_URL + "/api/courses/progress", {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									'Authorization': 'Bearer ' + token
+								},
+								body: JSON.stringify({
+									course_id: courseId,
+									completed_videos: completedVideos
+								})
+							});
+						}
+						videoCheckboxes.forEach(input => {
+							input.addEventListener('change', updateProgress);
+						});
+						updateProgress();
+					} else {
+						// Show message if no test is available
+						const msgDiv = document.createElement('div');
+						msgDiv.style.marginTop = '40px';
+						msgDiv.style.textAlign = 'center';
+						msgDiv.style.gridColumn = '1 / -1';
+						msgDiv.innerHTML = `<span class="text-warning">Test for this course will be available soon.</span>`;
+						container.appendChild(msgDiv);
+					}
+				});
 		}
 
 		document.getElementById('startNowBtn').addEventListener('click', function (e) {
